@@ -13,14 +13,11 @@ import { Input } from "@/components/ui/input";
 import { LoginSchema, LoginValues } from "@/lib/validations/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import login from "./action";
 
 export default function LoginForm() {
   const form = useForm<LoginValues>({
     resolver: zodResolver(LoginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
   });
 
   const {
@@ -37,6 +34,12 @@ export default function LoginForm() {
         formData.append(key, value);
       }
     });
+
+    try {
+      await login(formData);
+    } catch (err) {
+      alert("Something went wrong with application");
+    }
   }
 
   return (
@@ -54,7 +57,7 @@ export default function LoginForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g. abc@gmail.com" />
+                    <Input placeholder="e.g. abc@gmail.com" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -67,13 +70,12 @@ export default function LoginForm() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="********" />
+                    <Input placeholder="********" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
             <LoadingButton type="submit" loading={isSubmitting}>
               Login
             </LoadingButton>

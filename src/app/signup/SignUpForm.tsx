@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { SignUpSchema, SignUpValues } from "@/lib/validations/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { signUp } from "./actions";
 
 export default function SignUpForm() {
   const form = useForm<SignUpValues>({
@@ -39,6 +40,13 @@ export default function SignUpForm() {
         formData.append(key, value);
       }
     });
+
+    try {
+      signUp(formData);
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong with the server");
+    }
   }
   return (
     <main>
