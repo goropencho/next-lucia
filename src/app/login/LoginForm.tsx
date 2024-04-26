@@ -17,6 +17,10 @@ import { useForm } from "react-hook-form";
 export default function LoginForm() {
   const form = useForm<LoginValues>({
     resolver: zodResolver(LoginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
   const {

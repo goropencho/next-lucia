@@ -18,6 +18,11 @@ import { useForm } from "react-hook-form";
 export default function SignUpForm() {
   const form = useForm<SignUpValues>({
     resolver: zodResolver(SignUpSchema),
+    defaultValues: {
+      email: "",
+      name: "",
+      password: "",
+    },
   });
 
   const {
@@ -48,7 +53,7 @@ export default function SignUpForm() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Job Title</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input placeholder="e.g Lake Juke" {...field} />
                   </FormControl>
