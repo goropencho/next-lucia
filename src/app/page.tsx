@@ -1,8 +1,8 @@
-import { logout, validateRequest } from "@/lib/lucia";
-import Image from "next/image";
+import { logout, validateRequest } from "@/lib/common/lucia";
 
 export default async function Home() {
   const { user } = await validateRequest();
+
   return (
     <main className="max-w-5xl">
       <div>
@@ -11,9 +11,9 @@ export default async function Home() {
           <button>{!user && <a href={"/login"}>Login</a>}</button>
           <button>{!user && <a href={"/signup"}>Signup</a>}</button>
           {user && (
-            <button type="submit" onSubmit={logout}>
-              Logout
-            </button>
+            <form action={logout}>
+              <button type="submit">Logout</button>
+            </form>
           )}
         </div>
       </div>

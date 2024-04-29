@@ -1,7 +1,7 @@
 "use server";
 
-import { lucia } from "@/lib/lucia";
-import prisma from "@/lib/prisma";
+import { lucia } from "@/lib/common/lucia";
+import prisma from "@/lib/common/prisma";
 import { SignUpSchema } from "@/lib/validations/auth.schema";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";

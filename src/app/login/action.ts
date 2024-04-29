@@ -1,8 +1,9 @@
 "use server";
 
-import { lucia } from "@/lib/lucia";
-import prisma from "@/lib/prisma";
+import { lucia } from "@/lib/common/lucia";
+import prisma from "@/lib/common/prisma";
 import { LoginSchema } from "@/lib/validations/auth.schema";
+import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -18,7 +19,9 @@ export default async function Login(formData: FormData) {
   });
 
   if (!user || user.password != password) {
-    throw new Error("Invalid email or password");
+    return {
+      error: "Invalid Credentials provided",
+    };
   }
 
   const session = await lucia.createSession(user.id, {});
@@ -28,5 +31,9 @@ export default async function Login(formData: FormData) {
     sessionCookie.value,
     sessionCookie.attributes
   );
-  return redirect("/");
+
+  revalidatePath("/");
+  redirect("/dashboard");
+
+  return {};
 }
