@@ -1,10 +1,7 @@
-import { redirect } from "next/navigation";
-import { validateRequest } from "@/lib/common/lucia";
+"use server";
 
-export default async function Page() {
-  const { user } = await validateRequest();
-  if (!user) {
-    return redirect("/login");
-  }
-  return <h1>Hi, {user.email}!</h1>;
+import * as React from "react";
+
+export default async function DashboardPage() {
+  return <div className="flex flex-col gap-4">The Dashboard Page</div>;
 }

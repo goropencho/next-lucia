@@ -5,6 +5,7 @@ import prisma from "@/lib/common/prisma";
 import { cache } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { GitHub } from "arctic";
 
 const adapter = new PrismaAdapter(prisma.session, prisma.user);
 
@@ -22,6 +23,11 @@ export const lucia = new Lucia(adapter, {
   },
 });
 
+export const githubAuth = new GitHub(
+  process.env.GITHUB_CLIENT_ID!,
+  process.env.GITHUB_CLIENT_SECRET!
+);
+
 declare module "lucia" {
   interface Register {
     Lucia: typeof lucia;
@@ -34,19 +40,24 @@ interface DatabaseUserAttributes {
 }
 
 export const validateRequest = cache(
-  async (): Promise<
+  async (
+    authorizationHeader?: string | null | undefined
+  ): Promise<
     { user: User; session: Session } | { user: null; session: null }
   > => {
-    const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
+    let sessionId: string | null = null;
+    if (authorizationHeader) {
+      sessionId = lucia.readBearerToken(authorizationHeader);
+    } else {
+      sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
+    }
     if (!sessionId) {
       return {
         user: null,
         session: null,
       };
     }
-
     const result = await lucia.validateSession(sessionId);
-
     try {
       if (result.session && result.session.fresh) {
         const sessionCookie = lucia.createSessionCookie(result.session.id);
